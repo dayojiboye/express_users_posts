@@ -14,9 +14,9 @@ export const authErrors = (err: any) => {
 	}
 
 	// Incorrect email error & Incorrect password error
-	// if (err.message === "Invalid email" || err.message === "Invalid email or password") {
-	// 	return err.message;
-	// }
+	if (err.message === "Invalid email" || err.message === "Invalid email or password") {
+		return err.message;
+	}
 };
 
 export const registrationSchema = Joi.object({

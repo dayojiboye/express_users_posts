@@ -41,9 +41,28 @@ export default function () {
 					const salt = await bcrypt.genSalt();
 					user.dataValues.password = await bcrypt.hash(user.dataValues.password, salt);
 				},
+
+				afterCreate(user, options) {
+					delete user.dataValues.password;
+				},
 			},
 		}
 	);
+
+	User.prototype.login = async function (email: string, password: string) {
+		const user = await User.findOne({ where: { email } });
+
+		if (user) {
+			const auth = await bcrypt.compare(password, user.dataValues.password);
+			if (auth) {
+				delete user.dataValues.password;
+				return user;
+			}
+			throw Error("Invalid email or password");
+		}
+
+		throw Error("Invalid email");
+	};
 
 	return User;
 }
