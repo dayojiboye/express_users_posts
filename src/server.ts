@@ -5,9 +5,13 @@ import path from "path";
 import cookieParser from "cookie-parser";
 import "dotenv/config";
 import sequelize from "./config/dbConfig";
+import checkUser from "./middlewares/checkUserHandler";
 
 // Routes imports
 import authRouter from "./routes/authRoutes";
+import postRouter from "./routes/postRoutes";
+import apiBaseUrl from "./config/apiBaseUrl";
+import validateToken from "./middlewares/validateTokenHandler";
 
 const app = express();
 
@@ -23,11 +27,13 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
 
+// Routes
+app.use("*", checkUser);
 app.get("/", (req: Request, res: Response) => {
 	res.json({ message: "Hello from Server" });
 });
-
 app.use(authRouter);
+app.use(`${apiBaseUrl}/posts`, validateToken, postRouter);
 
 // Catch 404 and forward to error handler
 app.use(function (req: Request, res: Response, next: NextFunction) {

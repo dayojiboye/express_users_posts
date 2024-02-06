@@ -1,11 +1,11 @@
 import { Sequelize } from "sequelize";
-import { dbConfigInterface } from "../types";
+import { dbConfigInterface } from "../types/config";
 
 const dbConfig: dbConfigInterface = {
 	HOST: "localhost",
 	USER: "root",
 	PASSWORD: "",
-	DB: process.env.DB ?? "",
+	DB: process.env.DB!,
 	dialect: "mysql",
 
 	pool: {

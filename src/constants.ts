@@ -1,4 +1,4 @@
-import { statusCodesInterface } from "./types";
+import { statusCodesInterface } from "./types/common";
 
 export const statusCodes: statusCodesInterface = {
 	SUCCESSFUL: 200,
