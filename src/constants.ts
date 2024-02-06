@@ -11,3 +11,8 @@ export const statusCodes: statusCodesInterface = {
 
 export const defaultSuccessMessage = "Request processed successfully";
 export const serverErrorMessage = "Internal server error";
+export const unauthorizedMessage = "Unauthorized";
+export const badTokenFormatMessage = "Bad Token Format";
+export const forbiddenErrorMessage = "Forbidden Operation";
+export const invalidTokenMessage = "Invalid token";
+export const userNotFoundMessage = "No user found";

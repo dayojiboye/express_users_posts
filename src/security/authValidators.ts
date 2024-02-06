@@ -1,24 +1,22 @@
 import Joi from "joi";
 
-// Check the duplicate error codes for Sequelize
 export const authErrors = (err: any) => {
-	// Duplicate error codes
-	if (err.code === 11000) {
+	if (err.type === "unique violation") {
 		// Duplicate username error
-		if (err.message.includes("username")) {
+		if (err.message.includes("username must be unique")) {
 			return "Username already taken";
 		}
 
 		// Duplicate email error
-		if (err.message.includes("email")) {
+		if (err.message.includes("email must be unique")) {
 			return "Email already taken";
 		}
 	}
 
 	// Incorrect email error & Incorrect password error
-	if (err.message === "Invalid email" || err.message === "Invalid email or password") {
-		return err.message;
-	}
+	// if (err.message === "Invalid email" || err.message === "Invalid email or password") {
+	// 	return err.message;
+	// }
 };
 
 export const registrationSchema = Joi.object({
