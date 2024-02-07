@@ -19,8 +19,12 @@ export default function () {
 				type: DataTypes.UUID,
 				allowNull: false,
 			},
-			userId: {
+			authorId: {
 				type: DataTypes.UUID,
+				allowNull: false,
+			},
+			username: {
+				type: DataTypes.STRING,
 				allowNull: false,
 			},
 		},

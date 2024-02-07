@@ -9,12 +9,12 @@ const Comment = comment();
 
 // Relationships
 User.hasMany(Post, {
-	foreignKey: "userId",
+	foreignKey: "authorId",
 	as: "posts",
 });
 
 Post.belongsTo(User, {
-	foreignKey: "userId",
+	foreignKey: "authorId",
 	as: "author",
 });
 
