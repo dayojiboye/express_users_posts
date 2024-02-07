@@ -4,7 +4,7 @@ import { serverErrorMessage, statusCodes } from "../constants";
 import { Post, User } from "../models";
 
 export const createPost = async (req: Request, res: Response) => {
-	const userId = req.params.userId;
+	const userId = res.locals.user.id;
 	const { error } = postSchema.validate(req.body);
 
 	if (error) {

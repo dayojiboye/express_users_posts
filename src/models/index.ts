@@ -1,9 +1,11 @@
+import comment from "./comment";
 import post from "./post";
 import user from "./user";
 
 // Models
 const User = user();
 const Post = post();
+const Comment = comment();
 
 // Relationships
 User.hasMany(Post, {
@@ -16,4 +18,14 @@ Post.belongsTo(User, {
 	as: "author",
 });
 
-export { User, Post };
+Post.hasMany(Comment, {
+	foreignKey: "postId",
+	as: "comments",
+});
+
+Comment.belongsTo(Post, {
+	foreignKey: "postId",
+	as: "post",
+});
+
+export { User, Post, Comment };

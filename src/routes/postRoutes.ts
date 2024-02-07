@@ -3,6 +3,6 @@ import { createPost } from "../controllers/postController";
 
 const router = express.Router();
 
-router.post("/:userId/create", createPost);
+router.post("/create", createPost);
 
 export default router;
