@@ -6,12 +6,13 @@ import cookieParser from "cookie-parser";
 import "dotenv/config";
 import sequelize from "./config/dbConfig";
 import checkUser from "./middlewares/checkUserHandler";
+import validateToken from "./middlewares/validateTokenHandler";
+import apiBaseUrl from "./config/apiBaseUrl";
 
 // Routes imports
 import authRouter from "./routes/authRoutes";
 import postRouter from "./routes/postRoutes";
-import apiBaseUrl from "./config/apiBaseUrl";
-import validateToken from "./middlewares/validateTokenHandler";
+import commentRouter from "./routes/commentRoutes";
 
 const app = express();
 
@@ -34,6 +35,7 @@ app.get("/", (req: Request, res: Response) => {
 });
 app.use(authRouter);
 app.use(`${apiBaseUrl}/posts`, validateToken, postRouter);
+app.use(`${apiBaseUrl}/comments`, validateToken, commentRouter);
 
 // Catch 404 and forward to error handler
 app.use(function (req: Request, res: Response, next: NextFunction) {

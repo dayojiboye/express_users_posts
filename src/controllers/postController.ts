@@ -9,6 +9,7 @@ import {
 	userNotFoundMessage,
 } from "../constants";
 import { Comment, Post, User } from "../models";
+import sequelize from "../config/dbConfig";
 
 export const createPost = async (req: Request, res: Response) => {
 	const authorId = res.locals.user.id;
@@ -32,6 +33,14 @@ export const getAllPosts = async (req: Request, res: Response) => {
 	try {
 		const posts = await Post.findAll({
 			order: [["updatedAt", "DESC"]],
+			attributes: {
+				include: [
+					[
+						sequelize.literal("(SELECT COUNT(*) FROM Comments WHERE Comments.postId = Post.id)"),
+						"totalComments",
+					],
+				],
+			},
 			include: [
 				{
 					model: User,
@@ -41,12 +50,14 @@ export const getAllPosts = async (req: Request, res: Response) => {
 				{
 					model: Comment,
 					as: "comments",
+					attributes: [],
 				},
 			],
 		});
 
 		res.status(statusCodes.SUCCESSFUL).json({ message: defaultSuccessMessage, data: posts });
 	} catch (error) {
+		console.log(error);
 		res.status(statusCodes.SERVER_ERROR).json({ message: serverErrorMessage });
 	}
 };
@@ -67,6 +78,13 @@ export const getAllPostsByUser = async (req: Request, res: Response) => {
 				{
 					model: Comment,
 					as: "comments",
+					include: [
+						{
+							model: User,
+							as: "author",
+							attributes: ["id", "username"],
+						},
+					],
 				},
 			],
 		});

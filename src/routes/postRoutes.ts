@@ -16,4 +16,6 @@ router.get("/:userId", getAllPostsByUser);
 
 router.put("/update/:postId", updatePost);
 
+router.delete("/delete/:postId"); // Delete a post
+
 export default router;
