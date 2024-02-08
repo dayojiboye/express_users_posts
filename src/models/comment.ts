@@ -23,10 +23,6 @@ export default function () {
 				type: DataTypes.UUID,
 				allowNull: false,
 			},
-			username: {
-				type: DataTypes.STRING,
-				allowNull: false,
-			},
 		},
 		{}
 	);

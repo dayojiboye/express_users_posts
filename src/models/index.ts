@@ -13,6 +13,11 @@ User.hasMany(Post, {
 	as: "posts",
 });
 
+User.hasMany(Comment, {
+	foreignKey: "authorId",
+	as: "commentsByUser",
+});
+
 Post.belongsTo(User, {
 	foreignKey: "authorId",
 	as: "author",
@@ -26,6 +31,11 @@ Post.hasMany(Comment, {
 Comment.belongsTo(Post, {
 	foreignKey: "postId",
 	as: "post",
+});
+
+Comment.belongsTo(User, {
+	foreignKey: "authorId",
+	as: "author",
 });
 
 export { User, Post, Comment };
