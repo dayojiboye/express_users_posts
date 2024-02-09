@@ -1,5 +1,11 @@
 import express from "express";
-import { createPost, getAllPosts, getPost, updatePost } from "../controllers/postController";
+import {
+	createPost,
+	deletePost,
+	getAllPosts,
+	getPost,
+	updatePost,
+} from "../controllers/postController";
 
 const router = express.Router();
 
@@ -11,6 +17,6 @@ router.get("/:postId", getPost);
 
 router.put("/update/:postId", updatePost);
 
-router.delete("/delete/:postId"); // Delete a post
+router.delete("/delete/:postId", deletePost);
 
 export default router;

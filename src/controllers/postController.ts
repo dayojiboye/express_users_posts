@@ -134,3 +134,27 @@ export const updatePost = async (req: Request, res: Response) => {
 		res.status(statusCodes.SERVER_ERROR).json({ message: serverErrorMessage });
 	}
 };
+
+export const deletePost = async (req: Request, res: Response) => {
+	const userId = res.locals.user.id;
+	const postId = req.params.postId;
+
+	try {
+		const postToDelete = await Post.findByPk(postId);
+
+		if (!postToDelete) {
+			res.status(statusCodes.NOT_FOUND).json({ message: postNotFoundMessage });
+			return;
+		}
+
+		if (postToDelete.dataValues.authorId !== userId) {
+			res.status(statusCodes.FORBIDDEN).json({ message: forbiddenErrorMessage });
+			return;
+		}
+
+		const post = await Post.destroy({ where: { id: postId } });
+		res.status(statusCodes.SUCCESSFUL).json({ message: "Post deleted successfully", data: {} });
+	} catch (error) {
+		res.status(statusCodes.SERVER_ERROR).json({ message: serverErrorMessage });
+	}
+};
