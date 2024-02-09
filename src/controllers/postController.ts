@@ -6,7 +6,6 @@ import {
 	postNotFoundMessage,
 	serverErrorMessage,
 	statusCodes,
-	userNotFoundMessage,
 } from "../constants";
 import { Comment, Post, User } from "../models";
 import sequelize from "../config/dbConfig";
@@ -24,14 +23,16 @@ export const createPost = async (req: Request, res: Response) => {
 		const post = await Post.create({ ...req.body, authorId });
 		res.status(statusCodes.SUCCESSFUL).json({ message: "Post created successfully", data: post });
 	} catch (error) {
-		console.log(error);
 		res.status(statusCodes.SERVER_ERROR).json({ message: serverErrorMessage });
 	}
 };
 
 export const getAllPosts = async (req: Request, res: Response) => {
+	const userId = req.query.userId;
+
 	try {
 		const posts = await Post.findAll({
+			where: userId ? { authorId: userId } : undefined,
 			order: [["updatedAt", "DESC"]],
 			attributes: {
 				include: [
@@ -47,28 +48,33 @@ export const getAllPosts = async (req: Request, res: Response) => {
 					as: "author",
 					attributes: ["id", "username"],
 				},
-				{
-					model: Comment,
-					as: "comments",
-					attributes: [],
-				},
+				// {
+				// 	model: Comment,
+				// 	as: "comments",
+				// 	attributes: [],
+				// },
 			],
 		});
 
 		res.status(statusCodes.SUCCESSFUL).json({ message: defaultSuccessMessage, data: posts });
 	} catch (error) {
-		console.log(error);
 		res.status(statusCodes.SERVER_ERROR).json({ message: serverErrorMessage });
 	}
 };
 
-export const getAllPostsByUser = async (req: Request, res: Response) => {
-	const userId = req.params.userId;
+export const getPost = async (req: Request, res: Response) => {
+	const postId = req.params.postId;
 
 	try {
-		const posts = await Post.findAll({
-			where: { authorId: userId },
-			order: [["updatedAt", "DESC"]],
+		const post = await Post.findByPk(postId, {
+			attributes: {
+				include: [
+					[
+						sequelize.literal("(SELECT COUNT(*) FROM Comments WHERE Comments.postId = Post.id)"),
+						"totalComments",
+					],
+				],
+			},
 			include: [
 				{
 					model: User,
@@ -87,11 +93,12 @@ export const getAllPostsByUser = async (req: Request, res: Response) => {
 					],
 				},
 			],
+			order: [[Post.associations.comments, "createdAt", "DESC"]],
 		});
 
-		res.status(statusCodes.SUCCESSFUL).json({ message: defaultSuccessMessage, data: posts ?? [] });
+		res.status(statusCodes.SUCCESSFUL).json({ message: defaultSuccessMessage, data: post ?? {} });
 	} catch (error) {
-		res.status(statusCodes.NOT_FOUND).json({ message: userNotFoundMessage });
+		res.status(statusCodes.SERVER_ERROR).json({ message: serverErrorMessage });
 	}
 };
 
