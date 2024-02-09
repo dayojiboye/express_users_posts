@@ -1,5 +1,5 @@
 import express from "express";
-import { createComment, getCommentsByPost } from "../controllers/commentController";
+import { createComment, deleteComment, getCommentsByPost } from "../controllers/commentController";
 
 const router = express.Router();
 
@@ -7,6 +7,6 @@ router.get("/:postId", getCommentsByPost);
 
 router.post("/create/:postId", createComment);
 
-router.delete("/delete/:commentId"); // Delete a comment from a post
+router.delete("/delete/:commentId", deleteComment);
 
 export default router;

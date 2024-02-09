@@ -1,5 +1,10 @@
 import { Request, Response } from "express";
-import { defaultSuccessMessage, serverErrorMessage, statusCodes } from "../constants";
+import {
+	defaultSuccessMessage,
+	forbiddenErrorMessage,
+	serverErrorMessage,
+	statusCodes,
+} from "../constants";
 import { Comment, Post, User } from "../models";
 import { commentSchema } from "../security/commentValidator";
 import sequelize from "../config/dbConfig";
@@ -53,6 +58,30 @@ export const getCommentsByPost = async (req: Request, res: Response) => {
 		res.status(statusCodes.SUCCESSFUL).json({ message: defaultSuccessMessage, data: comments });
 	} catch (error) {
 		console.log(error);
+		res.status(statusCodes.SERVER_ERROR).json({ message: serverErrorMessage });
+	}
+};
+
+export const deleteComment = async (req: Request, res: Response) => {
+	const commentId = req.params.commentId;
+	const userId = res.locals.user.id;
+
+	try {
+		const commentToDelete = await Comment.findByPk(commentId);
+
+		if (!commentToDelete) {
+			res.status(statusCodes.NOT_FOUND).json({ message: "No comment found" });
+			return;
+		}
+
+		if (commentToDelete.dataValues.authorId !== userId) {
+			res.status(statusCodes.FORBIDDEN).json({ message: forbiddenErrorMessage });
+			return;
+		}
+
+		const comment = await Comment.destroy({ where: { id: commentId } });
+		res.status(statusCodes.SUCCESSFUL).json({ message: "Comment deleted successfully", data: {} });
+	} catch (error) {
 		res.status(statusCodes.SERVER_ERROR).json({ message: serverErrorMessage });
 	}
 };
